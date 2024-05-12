@@ -39,7 +39,7 @@ const contractABI = [{"inputs": [], "stateMutability": "nonpayable", "type": "co
 
 const contractAddress = '0x6Fc7D14341Ae4fcc793a36B0C455cCC4EcC68569';
 
-export const SendEth = (props: AppProps) => {
+export const Coin = (props: AppProps) => {
 
   const {userAccount, web3} = props;
   const [mintAmount, setMintAmount] = useState('10');
@@ -136,4 +136,4 @@ export const SendEth = (props: AppProps) => {
   )
 }
 
-export default SendEth;
+export default Coin;

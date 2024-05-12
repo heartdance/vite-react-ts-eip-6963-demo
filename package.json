@@ -10,8 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "buffer": "^6.0.3",
+    "ethers": "^6.12.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "siwe": "^2.3.2",
     "web3": "^4.8.0"
   },
   "devDependencies": {

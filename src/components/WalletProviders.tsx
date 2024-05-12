@@ -4,6 +4,7 @@ import { formatAddress } from '~/utils'
 import Web3 from 'web3'
 import SendEth from './SendEth'
 import Coin from './Coin'
+import Sign from './Sign'
 
 export type AppProps = {
   selectedWallet: EIP6963ProviderDetail;
@@ -23,22 +24,49 @@ export const DiscoverWalletProviders = () => {
 
   const handleConnect = async (providerWithInfo: EIP6963ProviderDetail) => {
     try {
-      const accounts = await providerWithInfo.provider.request({ 
-        method: 'eth_requestAccounts' 
-      });
-
       setSelectedWallet(providerWithInfo);
-      setUserAccount(accounts?.[0]);
 
       const web3= new Web3(providerWithInfo.provider);
       setWeb3(web3);
+
+      // const accounts = await web3.eth.requestAccounts();
+      const accounts = await web3.eth.getAccounts();
+      // const accounts = await providerWithInfo.provider.request({
+      //   method: 'eth_requestAccounts'
+      // });
+      setUserAccount(accounts?.[0]);
     } catch (error) {
       console.error(error);
     }
   }
 
+  const isConnected = () => {
+    return selectedWallet && userAccount && web3;
+  }
+
+  const renderAppSelect = (): React.ReactNode => {
+    if (!isConnected()) {
+      return null;
+    }
+    return (
+      <div>
+        {['sendEth', 'coin', 'sign'].map(v => (
+          <span key={v}>
+            <input
+              type="radio"
+              value={v}
+              checked={app === v}
+              onChange={e => setApp(e.target.value)}
+            />
+            <span>{v}</span>
+          </span>
+        ))}
+      </div>
+    );
+  }
+
   const renderApp = (): React.ReactNode => {
-    if (!selectedWallet || !userAccount || !web3) {
+    if (!isConnected()) {
       return null;
     }
     const appProps: AppProps = {selectedWallet, userAccount, web3};
@@ -47,6 +75,9 @@ export const DiscoverWalletProviders = () => {
     }
     if (app === 'coin') {
       return <Coin {...appProps} />
+    }
+    if (app === 'sign') {
+      return <Sign {...appProps} />
     }
     return null;
   }
@@ -78,19 +109,7 @@ export const DiscoverWalletProviders = () => {
               </div>
           </div>
       }
-      <div>
-        {['sendEth', 'coin'].map(v => (
-          <span key={v}>
-            <input
-              type="radio"
-              value={v}
-              checked={app === v}
-              onChange={e => setApp(e.target.value)}
-            />
-            <span>{v}</span>
-          </span>
-        ))}
-      </div>
+      {renderAppSelect()}
       {renderApp()}
     </>
   )
